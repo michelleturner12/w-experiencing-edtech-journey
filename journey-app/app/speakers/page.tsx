@@ -1,11 +1,19 @@
-import BottomNav from "../../components/BottomNav";
+type NavIconProps = {
+  type: "home" | "sessions" | "partners" | "speakers" | "announcements";
+};
 
-export default function SpeakersPage() {
+export default function NavIcon({ type }: NavIconProps) {
+  const icons = {
+    home: "🏠",
+    sessions: "🗓️",
+    partners: "🤝",
+    speakers: "🎤",
+    announcements: "📣",
+  };
+
   return (
-    <main className="min-h-screen bg-slate-100 p-8 pb-28">
-      <h1 className="text-4xl font-bold">Speakers</h1>
-      <p className="mt-4 text-slate-600">Speaker details will appear here.</p>
-      <BottomNav />
-    </main>
+    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-50 text-3xl shadow-sm">
+      {icons[type]}
+    </div>
   );
 }
