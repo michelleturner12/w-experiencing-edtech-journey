@@ -1,30 +1,60 @@
 import Link from "next/link";
 import Hero from "../components/Hero";
 import BottomNav from "../components/BottomNav";
+import NavIcon from "../components/NavIcon";
+
+const cards = [
+  {
+    label: "Sessions",
+    description: "View the full schedule",
+    href: "/sessions",
+    icon: "sessions",
+  },
+  {
+    label: "Partners",
+    description: "Discover our partners",
+    href: "/partners",
+    icon: "partners",
+  },
+  {
+    label: "Speakers",
+    description: "Meet featured speakers",
+    href: "/speakers",
+    icon: "speakers",
+  },
+  {
+    label: "Announcements",
+    description: "Get the latest updates",
+    href: "/announcements",
+    icon: "announcements",
+  },
+] as const;
 
 export default function Home() {
-  const cards = [
-  { label: "🎤 Sessions", href: "/sessions" },
-  { label: "❤️ My Journey", href: "/journey" },
-  { label: "🤝 Partners", href: "/partners" },
-  { label: "📢 Announcements", href: "/announcements" },
-];
-
   return (
-    <main className="min-h-screen bg-slate-100 pb-24">
+    <main className="min-h-screen bg-slate-100 pb-28">
       <Hero
         title="Your Experiencing EdTech Journey"
         subtitle="A personalized conference companion designed to help you discover ideas, connect with innovators, and maximize your conference experience."
       />
 
-      <section className="mx-auto -mt-10 grid max-w-6xl gap-6 px-8 md:grid-cols-4">
+      <section className="mx-auto -mt-10 grid max-w-6xl gap-5 px-6 md:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
           <Link
-            key={card.label}
+            key={card.href}
             href={card.href}
-            className="rounded-2xl bg-white p-8 text-center shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+            className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
           >
-            <h2 className="text-xl font-semibold">{card.label}</h2>
+            <NavIcon type={card.icon} />
+
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">
+                {card.label}
+              </h2>
+              <p className="mt-1 text-sm text-slate-600">
+                {card.description}
+              </p>
+            </div>
           </Link>
         ))}
       </section>
