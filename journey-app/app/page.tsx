@@ -4,11 +4,11 @@ import BottomNav from "../components/BottomNav";
 
 export default function Home() {
   const cards = [
-    { label: "🎤 Sessions", href: "/sessions" },
-    { label: "❤️ My Journey", href: "/journey" },
-    { label: "🤝 Partners", href: "/more" },
-    { label: "📢 Announcements", href: "/more" },
-  ];
+  { label: "🎤 Sessions", href: "/sessions" },
+  { label: "❤️ My Journey", href: "/journey" },
+  { label: "🤝 Partners", href: "/partners" },
+  { label: "📢 Announcements", href: "/announcements" },
+];
 
   return (
     <main className="min-h-screen bg-slate-100 pb-24">

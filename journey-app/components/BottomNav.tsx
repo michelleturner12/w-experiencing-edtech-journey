@@ -6,7 +6,6 @@ export default function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 border-t bg-white shadow-lg">
       <div className="mx-auto flex max-w-5xl justify-around py-3">
-
         <Link
           href="/"
           className="flex flex-col items-center text-sm text-slate-700 hover:text-teal-700"
@@ -32,13 +31,20 @@ export default function BottomNav() {
         </Link>
 
         <Link
-          href="/more"
+          href="/partners"
           className="flex flex-col items-center text-sm text-slate-700 hover:text-teal-700"
         >
-          <span className="text-xl">⋯</span>
-          More
+          <span className="text-xl">🤝</span>
+          Partners
         </Link>
 
+        <Link
+          href="/announcements"
+          className="flex flex-col items-center text-sm text-slate-700 hover:text-teal-700"
+        >
+          <span className="text-xl">📢</span>
+          Updates
+        </Link>
       </div>
     </nav>
   );
