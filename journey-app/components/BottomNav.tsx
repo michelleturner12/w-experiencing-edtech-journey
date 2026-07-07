@@ -43,7 +43,7 @@ export default function BottomNav() {
           className="flex flex-col items-center text-sm text-slate-700 hover:text-teal-700"
         >
           <span className="text-xl">📢</span>
-          Updates
+          Announcements
         </Link>
       </div>
     </nav>
