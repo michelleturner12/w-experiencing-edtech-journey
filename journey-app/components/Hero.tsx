@@ -35,7 +35,7 @@ export default function Hero({ title, subtitle }: HeroProps) {
         <div className="mb-8 flex items-center gap-5">
           <div className="flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden rounded-md">
             <Image
-              src="/experiencing-edtech-logo.png"
+              src="/experiencing-edtech-mark.png"
               alt="Experiencing EdTech Conference"
               width={160}
               height={160}
