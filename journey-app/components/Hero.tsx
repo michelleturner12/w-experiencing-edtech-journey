@@ -8,10 +8,9 @@ type HeroProps = {
 
 export default function Hero({ title, subtitle }: HeroProps) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-[#062B70] via-[#075C9B] to-[#12BCC4] px-6 pb-28 pt-10 text-white">
-      {/* Big arrow swoosh */}
+    <section className="relative overflow-hidden bg-gradient-to-r from-[#062B70] via-[#075C9B] to-[#12BCC4] px-6 pb-36 pt-10 text-white">
       <svg
-        className="absolute right-[-6rem] top-10 h-[42rem] w-[42rem] opacity-35"
+        className="absolute right-[-10rem] top-16 h-[44rem] w-[44rem] opacity-30"
         viewBox="0 0 600 600"
         fill="none"
       >
@@ -21,44 +20,19 @@ export default function Hero({ title, subtitle }: HeroProps) {
           strokeWidth="58"
           strokeLinecap="round"
         />
-        <path
-          d="M405 90L520 52L497 172"
-          fill="#12BCC4"
-        />
-        <path
-          d="M130 555C280 430 390 300 520 90"
-          stroke="#0AA3B5"
-          strokeWidth="36"
-          strokeLinecap="round"
-          opacity="0.45"
-        />
+        <path d="M405 90L520 52L497 172" fill="#12BCC4" />
       </svg>
 
       <div className="relative mx-auto max-w-6xl">
-        {/* Logo lockup recreated so EdTech is white */}
-        <div className="mb-10 flex items-center gap-5">
+        <div className="mb-10 inline-flex rounded-2xl bg-white px-8 py-5 shadow-xl">
           <Image
             src="/experiencing-edtech-logo.png"
-            alt="Experiencing EdTech logo"
-            width={145}
-            height={145}
+            alt="Experiencing EdTech Conference"
+            width={520}
+            height={180}
             priority
-            className="h-32 w-32 rounded-md object-cover"
+            className="h-auto w-full max-w-md"
           />
-
-          <div>
-            <p className="text-3xl font-black uppercase tracking-wider text-[#FF6242]">
-              Experiencing
-            </p>
-
-            <p className="text-7xl font-black leading-none text-white">
-              EdTech
-            </p>
-
-            <p className="text-3xl font-black uppercase tracking-[0.28em] text-[#12BCC4]">
-              Conference
-            </p>
-          </div>
         </div>
 
         <p className="mb-4 text-sm font-black uppercase tracking-[0.35em] text-[#FFB13B]">
