@@ -12,7 +12,7 @@ const cards = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-100 pb-28">
+    <main className="min-h-screen bg-[#F4F8FB] pb-28">
       <Hero
         title="Your Experiencing EdTech Journey"
         subtitle="A personalized conference companion designed to help you discover ideas, connect with innovators, and maximize your conference experience."
@@ -23,7 +23,7 @@ export default function Home() {
           <Link
             key={card.href}
             href={card.href}
-           className="flex min-w-0 items-center gap-4 rounded-2xl bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl sm:min-h-32"
+           className="flex min-w-0 items-center gap-4 rounded-2xl border border-[#DDEAF2] bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:border-[#12BCC4] hover:shadow-xl sm:min-h-32"
           >
             <NavIcon type={card.icon} size="large" />
 
