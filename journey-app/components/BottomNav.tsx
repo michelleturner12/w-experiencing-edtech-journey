@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import NavIcon from "./NavIcon";
 
 const navItems = [
-  { label: "Home", href: "/", icon: "🏠" },
-  { label: "Sessions", href: "/sessions", icon: "📅" },
-  { label: "Partners", href: "/partners", icon: "🤝" },
-  { label: "Speakers", href: "/speakers", icon: "🎙️" },
-  { label: "Updates", href: "/announcements", icon: "📣" },
-];
+  { label: "Home", href: "/", icon: "home" },
+  { label: "Sessions", href: "/sessions", icon: "sessions" },
+  { label: "Partners", href: "/partners", icon: "partners" },
+  { label: "Speakers", href: "/speakers", icon: "speakers" },
+  { label: "Updates", href: "/announcements", icon: "announcements" },
+] as const;
 
 export default function BottomNav() {
   return (
@@ -20,9 +21,7 @@ export default function BottomNav() {
             href={item.href}
             className="flex flex-col items-center gap-1 text-xs font-medium text-slate-700 hover:text-teal-700"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-2xl shadow-sm">
-              {item.icon}
-            </div>
+            <NavIcon type={item.icon} size="small" />
             {item.label}
           </Link>
         ))}
