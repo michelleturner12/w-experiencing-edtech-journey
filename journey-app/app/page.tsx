@@ -18,7 +18,7 @@ export default function Home() {
         subtitle="A personalized conference companion designed to help you discover ideas, connect with innovators, and maximize your conference experience."
       />
 
-      <section <section className="mx-auto -mt-10 grid max-w-6xl grid-cols-1 gap-5 px-6 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="mx-auto -mt-10 grid max-w-6xl grid-cols-1 gap-5 px-6 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
           <Link
             key={card.href}
