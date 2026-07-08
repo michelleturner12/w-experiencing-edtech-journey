@@ -1,34 +1,13 @@
 import Link from "next/link";
 import Hero from "../components/Hero";
 import BottomNav from "../components/BottomNav";
-import NavIcon from "../components/NavIcon";
 
 const cards = [
-  {
-    label: "Sessions",
-    description: "View the full schedule",
-    href: "/sessions",
-    icon: "sessions",
-  },
-  {
-    label: "Partners",
-    description: "Discover our partners",
-    href: "/partners",
-    icon: "partners",
-  },
-  {
-    label: "Speakers",
-    description: "Meet featured speakers",
-    href: "/speakers",
-    icon: "speakers",
-  },
-  {
-    label: "Announcements",
-    description: "Get the latest updates",
-    href: "/announcements",
-    icon: "announcements",
-  },
-] as const;
+  { label: "Sessions", description: "View the full schedule", href: "/sessions", icon: "S" },
+  { label: "Partners", description: "Discover our partners", href: "/partners", icon: "P" },
+  { label: "Speakers", description: "Meet featured speakers", href: "/speakers", icon: "SP" },
+  { label: "Announcements", description: "Get the latest updates", href: "/announcements", icon: "U" },
+];
 
 export default function Home() {
   return (
@@ -45,15 +24,13 @@ export default function Home() {
             href={card.href}
             className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
           >
-            <NavIcon type={card.icon} />
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-teal-50 text-lg font-bold text-teal-700 shadow-sm">
+              {card.icon}
+            </div>
 
             <div>
-              <h2 className="text-lg font-bold text-slate-900">
-                {card.label}
-              </h2>
-              <p className="mt-1 text-sm text-slate-600">
-                {card.description}
-              </p>
+              <h2 className="text-lg font-bold text-slate-900">{card.label}</h2>
+              <p className="mt-1 text-sm text-slate-600">{card.description}</p>
             </div>
           </Link>
         ))}
