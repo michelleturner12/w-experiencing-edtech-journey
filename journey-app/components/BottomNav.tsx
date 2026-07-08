@@ -3,11 +3,11 @@
 import Link from "next/link";
 
 const navItems = [
-  { label: "Home", href: "/", icon: "H" },
-  { label: "Sessions", href: "/sessions", icon: "S" },
-  { label: "Partners", href: "/partners", icon: "P" },
-  { label: "Speakers", href: "/speakers", icon: "SP" },
-  { label: "Updates", href: "/announcements", icon: "U" },
+  { label: "Home", href: "/", icon: "🏠" },
+  { label: "Sessions", href: "/sessions", icon: "📅" },
+  { label: "Partners", href: "/partners", icon: "🤝" },
+  { label: "Speakers", href: "/speakers", icon: "🎙️" },
+  { label: "Updates", href: "/announcements", icon: "📣" },
 ];
 
 export default function BottomNav() {
@@ -20,7 +20,7 @@ export default function BottomNav() {
             href={item.href}
             className="flex flex-col items-center gap-1 text-xs font-medium text-slate-700 hover:text-teal-700"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-50 text-xs font-bold text-teal-700">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-2xl shadow-sm">
               {item.icon}
             </div>
             {item.label}
