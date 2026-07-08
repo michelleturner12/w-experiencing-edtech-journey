@@ -8,38 +8,60 @@ type HeroProps = {
 
 export default function Hero({ title, subtitle }: HeroProps) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-[#062B70] via-[#075C9B] to-[#12BCC4] px-6 pb-36 pt-10 text-white">
+    <section className="relative overflow-hidden bg-gradient-to-r from-[#062B70] via-[#075C9B] to-[#12BCC4] px-6 pb-36 pt-8 text-white">
       <svg
-        className="absolute right-[-10rem] top-16 h-[44rem] w-[44rem] opacity-30"
+        className="pointer-events-none absolute right-[-8rem] top-12 h-[42rem] w-[42rem] opacity-30"
         viewBox="0 0 600 600"
         fill="none"
+        aria-hidden="true"
       >
         <path
-          d="M80 520C210 410 330 270 445 95"
+          d="M55 540C200 430 340 280 455 90"
           stroke="#12BCC4"
           strokeWidth="58"
           strokeLinecap="round"
         />
-        <path d="M405 90L520 52L497 172" fill="#12BCC4" />
+        <path d="M415 90L530 52L507 172" fill="#12BCC4" />
+        <path
+          d="M130 570C275 455 400 310 520 115"
+          stroke="#0A8FA8"
+          strokeWidth="34"
+          strokeLinecap="round"
+          opacity="0.55"
+        />
       </svg>
 
       <div className="relative mx-auto max-w-6xl">
-        <div className="mb-10 inline-flex rounded-2xl bg-white px-8 py-5 shadow-xl">
-          <Image
-            src="/experiencing-edtech-logo.png"
-            alt="Experiencing EdTech Conference"
-            width={520}
-            height={180}
-            priority
-            className="h-auto w-full max-w-md"
-          />
+        <div className="mb-8 flex items-center gap-5">
+          <div className="flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden rounded-md">
+            <Image
+              src="/experiencing-edtech-logo.png"
+              alt="Experiencing EdTech Conference"
+              width={160}
+              height={160}
+              priority
+              className="h-full w-full object-cover object-left"
+            />
+          </div>
+
+          <div className="leading-none">
+            <p className="text-2xl font-black uppercase tracking-[0.12em] text-[#FF6242] sm:text-3xl">
+              Experiencing
+            </p>
+            <p className="mt-1 text-5xl font-black tracking-tight text-white sm:text-6xl">
+              EdTech
+            </p>
+            <p className="mt-1 text-xl font-black uppercase tracking-[0.28em] text-[#12BCC4] sm:text-2xl">
+              Conference
+            </p>
+          </div>
         </div>
 
         <p className="mb-4 text-sm font-black uppercase tracking-[0.35em] text-[#FFB13B]">
           October 6, 2026
         </p>
 
-        <h1 className="max-w-4xl text-4xl font-black leading-tight sm:text-5xl">
+        <h1 className="whitespace-nowrap text-4xl font-black leading-tight sm:text-5xl">
           {title}
         </h1>
 
