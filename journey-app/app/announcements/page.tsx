@@ -1,96 +1,39 @@
-"use client";
+import Link from "next/link";
+import Hero from "../components/Hero";
+import BottomNav from "../components/BottomNav";
+import NavIcon from "../components/NavIcon";
 
-import { useEffect, useState } from "react";
-import BottomNav from "../../components/BottomNav";
+const cards = [
+  { label: "Sessions", description: "View the full schedule", href: "/sessions", icon: "sessions" },
+  { label: "Partners", description: "Discover our partners", href: "/partners", icon: "partners" },
+  { label: "Speakers", description: "Meet featured speakers", href: "/speakers", icon: "speakers" },
+  { label: "Announcements", description: "Get the latest updates", href: "/announcements", icon: "announcements" },
+] as const;
 
-type Announcement = {
-  Date: string;
-  Time: string;
-  Title: string;
-  Message: string;
-  Priority: string;
-};
-
-const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSmAC3kHb6-asEJxqGcQUnm723xpUiFYy7sSObHEvckb5AgSmU6sIfruCrQC7O-TqxSs8KtNa-_xgZ/pub?gid=753361707&single=true&output=csv";
-
-function parseCSV(text: string): Announcement[] {
-  const rows = text.trim().split(/\r?\n/);
-  if (rows.length < 2) return [];
-
-  const headers = rows[0].split(",").map((header) => header.trim());
-
-  return rows.slice(1).map((line) => {
-    const values = line.split(",").map((value) => value.trim());
-    const row: Record<string, string> = {};
-
-    headers.forEach((header, index) => {
-      row[header] = values[index] ?? "";
-    });
-
-    return row as Announcement;
-  });
-}
-
-export default function AnnouncementsPage() {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadAnnouncements() {
-      const response = await fetch(SHEET_URL);
-      const text = await response.text();
-      setAnnouncements(parseCSV(text));
-      setLoading(false);
-    }
-
-    loadAnnouncements();
-  }, []);
-
+export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-100 pb-24">
-      <div className="mx-auto max-w-5xl p-8">
-        <h1 className="mb-2 text-4xl font-bold">Announcements</h1>
+    <main className="min-h-screen bg-slate-100 pb-28">
+      <Hero
+        title="Your Experiencing EdTech Journey"
+        subtitle="A personalized conference companion designed to help you discover ideas, connect with innovators, and maximize your conference experience."
+      />
 
-        <p className="mb-6 text-slate-600">
-          Stay up to date throughout Experiencing EdTech 2026.
-        </p>
+      <section className="mx-auto -mt-10 grid max-w-6xl gap-5 px-6 md:grid-cols-2 lg:grid-cols-4">
+        {cards.map((card) => (
+          <Link
+            key={card.href}
+            href={card.href}
+            className="flex items-center gap-5 rounded-2xl bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+          >
+            <NavIcon type={card.icon} size="large" />
 
-        {loading && (
-          <p className="text-slate-600">Loading announcements...</p>
-        )}
-
-        {!loading && announcements.length === 0 && (
-          <div className="rounded-2xl bg-white p-6 text-slate-600 shadow">
-            No announcements yet. Check back soon.
-          </div>
-        )}
-
-        <div className="space-y-4">
-          {announcements.map((announcement, index) => (
-            <article
-              key={`${announcement.Title}-${index}`}
-              className="rounded-2xl bg-white p-6 shadow"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
-                  {announcement.Priority || "Update"}
-                </p>
-
-                <p className="text-sm text-slate-500">
-                  {announcement.Date} {announcement.Time && `• ${announcement.Time}`}
-                </p>
-              </div>
-
-              <h2 className="mt-2 text-xl font-bold text-slate-900">
-                {announcement.Title}
-              </h2>
-
-              <p className="mt-3 text-slate-600">{announcement.Message}</p>
-            </article>
-          ))}
-        </div>
-      </div>
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">{card.label}</h2>
+              <p className="mt-1 text-sm text-slate-600">{card.description}</p>
+            </div>
+          </Link>
+        ))}
+      </section>
 
       <BottomNav />
     </main>
