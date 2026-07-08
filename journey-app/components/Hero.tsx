@@ -8,18 +8,20 @@ type HeroProps = {
 
 export default function Hero({ title, subtitle }: HeroProps) {
   return (
-    <section className="bg-gradient-to-r from-[#062B70] via-[#0A5D9C] to-[#12BCC4] px-6 pb-24 pt-8 text-white">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative overflow-hidden bg-gradient-to-r from-[#062B70] via-[#0A5D9C] to-[#12BCC4] px-6 pb-24 pt-10 text-white">
+      <div className="absolute right-[-8rem] top-12 h-[34rem] w-[34rem] rounded-full border-[4rem] border-[#12BCC4]/20" />
+
+      <div className="relative mx-auto max-w-6xl">
         <Image
           src="/experiencing-edtech-logo.png"
           alt="Experiencing EdTech Conference"
-          width={420}
-          height={170}
+          width={900}
+          height={360}
           priority
-          className="mb-8 h-auto w-full max-w-sm rounded-xl bg-white p-3 shadow-lg"
+          className="mb-8 h-auto w-full max-w-xl"
         />
 
-        <p className="mb-5 text-sm font-semibold uppercase tracking-[0.3em] text-[#FFB13B]">
+        <p className="mb-4 text-sm font-bold uppercase tracking-[0.3em] text-[#FFB13B]">
           October 6, 2026
         </p>
 
