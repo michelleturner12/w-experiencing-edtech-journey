@@ -23,14 +23,18 @@ export default function Home() {
           <Link
             key={card.href}
             href={card.href}
-            className="flex items-center gap-5 rounded-2xl bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+           className="flex min-w-0 items-center gap-4 rounded-2xl bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
           >
             <NavIcon type={card.icon} size="large" />
 
-            <div>
-              <h2 className="text-xl font-bold text-slate-900">{card.label}</h2>
-              <p className="mt-1 text-sm text-slate-600">{card.description}</p>
-            </div>
+            <div className="min-w-0">
+  <h2 className="text-lg font-bold leading-tight text-slate-900">
+    {card.label}
+  </h2>
+  <p className="mt-1 text-sm leading-snug text-slate-600">
+    {card.description}
+  </p>
+</div>
           </Link>
         ))}
       </section>
