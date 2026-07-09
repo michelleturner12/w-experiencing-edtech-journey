@@ -38,7 +38,43 @@ export default function Home() {
           </Link>
         ))}
       </section>
+<section className="mx-auto mt-10 max-w-6xl px-6">
+  <div className="rounded-3xl border border-[#DDEAF2] bg-white p-6 shadow-lg">
+    <div className="mb-5">
+      <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#12BCC4]">
+        Conference Schedule
+      </p>
+      <h2 className="mt-2 text-2xl font-black text-[#062B70]">
+        Day at a Glance
+      </h2>
+      <p className="mt-2 text-slate-600">
+        Plan your Experiencing EdTech 2026 experience.
+      </p>
+    </div>
 
+    <div className="space-y-3">
+      {[
+        ["8:15–9:00 AM", "Check-In, Breakfast/Coffee, & Explore Exhibitor Space"],
+        ["9:00–10:00 AM", "Session 1"],
+        ["10:05–11:05 AM", "Session 2"],
+        ["11:05–11:25 AM", "Break — Explore Exhibitor Space"],
+        ["11:25 AM–12:25 PM", "Session 3"],
+        ["12:30–1:20 PM", "Lunch"],
+        ["1:30–2:30 PM", "Keynote — Charles Clark"],
+        ["2:40–3:40 PM", "Session 4"],
+        ["3:45–4:30 PM", "Session 5"],
+      ].map(([time, event]) => (
+        <div
+          key={time}
+          className="flex flex-col gap-1 rounded-2xl bg-[#F4F8FB] p-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <p className="font-bold text-[#062B70]">{time}</p>
+          <p className="text-slate-700">{event}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
       <BottomNav />
     </main>
   );
