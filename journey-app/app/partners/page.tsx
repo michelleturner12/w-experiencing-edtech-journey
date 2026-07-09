@@ -14,7 +14,7 @@ type Partner = {
 };
 
 const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSmAC3kHb6-asEJxqGcQUnm723xpUiFYy7sSObHEvckb5AgSmU6sIfruCrQC7O-TqxSs8KtNa-_xgZ/pub?output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSmAC3kHb6-asEJxqGcQUnm723xpUiFYy7sSObHEvckb5AgSmU6sIfruCrQC7O-TqxSs8KtNa-_xgZ/pub?gid=884408230&single=true&output=csv";
 
 function parseCSV(text: string): Partner[] {
   const rows = text.trim().split(/\r?\n/);
