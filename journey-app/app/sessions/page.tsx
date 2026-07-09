@@ -47,7 +47,7 @@ export default function SessionsPage() {
     if (saved) setSavedIds(JSON.parse(saved));
 
     async function loadSessions() {
-      const response = await fetch(SHEET_URL);
+      const response = await fetch(SHEET_URL, { cache: "no-store" });
       const text = await response.text();
       setSessions(parseCSV(text));
       setLoading(false);
