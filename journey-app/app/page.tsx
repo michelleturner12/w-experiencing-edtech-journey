@@ -31,8 +31,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#F4F8FB] pb-28">
       <Hero
-        title="Good morning! Welcome to Experiencing EdTech 2026"
-        subtitle="A personalized conference companion designed to help you discover ideas, connect with innovators, and maximize your conference experience."
+        title="Welcome to Experiencing EdTech 2026"
+        subtitle="Engage with the app to discover ideas, connect with innovators, and maximize your conference experience."
       />
 
       <section className="relative z-10 mx-auto -mt-20 grid max-w-6xl grid-cols-1 gap-5 px-6 sm:grid-cols-2 lg:grid-cols-4">
