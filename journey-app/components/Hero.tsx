@@ -65,7 +65,7 @@ export default function Hero({ title, subtitle }: HeroProps) {
           {title}
         </h1>
 
-        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-white/95">
+        <p className="mt-5 text-lg leading-relaxed text-white/95 sm:whitespace-nowrap">
           {subtitle}
         </p>
 
