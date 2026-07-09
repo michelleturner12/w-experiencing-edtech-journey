@@ -8,7 +8,7 @@ const navItems = [
   { label: "Sessions", href: "/sessions", icon: "sessions" },
   { label: "Partners", href: "/partners", icon: "partners" },
   { label: "Speakers", href: "/speakers", icon: "speakers" },
-  { label: "Updates", href: "/announcements", icon: "announcements" },
+  { label: "Announcements", href: "/announcements", icon: "announcements" },
 ] as const;
 
 export default function BottomNav() {
