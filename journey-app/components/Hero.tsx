@@ -32,15 +32,29 @@ export default function Hero({ title, subtitle }: HeroProps) {
       </svg>
 
       <div className="relative mx-auto max-w-6xl">
-        <div className="mb-8">
+        <div className="mb-8 flex items-center gap-5">
   <Image
-    src="/experiencing-edtech-logo.png"
-    alt="Experiencing EdTech Conference"
-    width={620}
-    height={240}
+    src="/experiencing-edtech-mark.png"
+    alt=""
+    width={150}
+    height={150}
     priority
-    className="h-auto w-full max-w-xl"
+    className="h-32 w-32 shrink-0 object-contain"
   />
+
+  <div className="leading-none">
+    <p className="text-2xl font-black uppercase tracking-[0.12em] text-[#FF6242] sm:text-3xl">
+      Experiencing
+    </p>
+
+    <p className="mt-1 text-5xl font-black tracking-tight text-white sm:text-6xl">
+      EdTech
+    </p>
+
+    <p className="mt-1 text-xl font-black uppercase tracking-[0.28em] text-[#12BCC4] sm:text-2xl">
+      Conference
+    </p>
+  </div>
 </div>
 
         <p className="mb-4 text-sm font-black uppercase tracking-[0.35em] text-[#FFB13B]">
