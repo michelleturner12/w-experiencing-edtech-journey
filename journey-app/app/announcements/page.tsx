@@ -38,7 +38,7 @@ export default function AnnouncementsPage() {
 
   useEffect(() => {
     async function loadAnnouncements() {
-      const response = await fetch(SHEET_URL);
+      const response = await fetch(SHEET_URL, { cache: "no-store" });
       const text = await response.text();
       setAnnouncements(parseCSV(text));
       setLoading(false);
@@ -48,43 +48,54 @@ export default function AnnouncementsPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-slate-100 pb-24">
-      <div className="mx-auto max-w-5xl p-8">
-        <h1 className="mb-2 text-4xl font-bold">Announcements</h1>
-
-        <p className="mb-6 text-slate-600">
-          Stay up to date throughout Experiencing EdTech 2026.
+    <main className="min-h-screen bg-[#F4F8FB] pb-28">
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#12BCC4]">
+          Experiencing EdTech 2026
         </p>
 
-        {loading && <p className="text-slate-600">Loading announcements...</p>}
+        <h1 className="mt-2 text-4xl font-black text-[#062B70]">
+          Announcements
+        </h1>
+
+        <p className="mt-3 text-slate-600">
+          Stay up to date throughout the conference.
+        </p>
+
+        {loading && (
+          <p className="mt-8 text-slate-600">Loading announcements...</p>
+        )}
 
         {!loading && announcements.length === 0 && (
-          <div className="rounded-2xl bg-white p-6 text-slate-600 shadow">
+          <div className="mt-8 rounded-2xl bg-white p-6 text-slate-600 shadow">
             No announcements yet. Check back soon.
           </div>
         )}
 
-        <div className="space-y-4">
+        <div className="mt-8 space-y-4">
           {announcements.map((announcement, index) => (
             <article
               key={`${announcement.Title}-${index}`}
-              className="rounded-2xl bg-white p-6 shadow"
+              className="rounded-3xl border border-[#DDEAF2] bg-white p-6 shadow-lg"
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
+                <p className="text-sm font-bold uppercase tracking-wide text-[#12BCC4]">
                   {announcement.Priority || "Update"}
                 </p>
 
-                <p className="text-sm text-slate-500">
-                  {announcement.Date} {announcement.Time && `• ${announcement.Time}`}
+                <p className="text-sm font-semibold text-slate-500">
+                  {announcement.Date}
+                  {announcement.Time ? ` • ${announcement.Time}` : ""}
                 </p>
               </div>
 
-              <h2 className="mt-2 text-xl font-bold text-slate-900">
+              <h2 className="mt-3 text-xl font-black text-[#062B70]">
                 {announcement.Title}
               </h2>
 
-              <p className="mt-3 text-slate-600">{announcement.Message}</p>
+              <p className="mt-3 leading-relaxed text-slate-600">
+                {announcement.Message}
+              </p>
             </article>
           ))}
         </div>
