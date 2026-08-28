@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import BottomNav from "../../components/BottomNav";
+import { parseCSV } from "../../lib/csv";
 
 type Speaker = {
   Name: string;
@@ -15,24 +16,6 @@ type Speaker = {
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSmAC3kHb6-asEJxqGcQUnm723xpUiFYy7sSObHEvckb5AgSmU6sIfruCrQC7O-TqxSs8KtNa-_xgZ/pub?gid=1680982673&single=true&output=csv";
 
-function parseCSV(text: string): Speaker[] {
-  const rows = text.trim().split(/\r?\n/);
-  if (rows.length < 2) return [];
-
-  const headers = rows[0].split(",").map((header) => header.trim());
-
-  return rows.slice(1).map((line) => {
-    const values = line.split(",").map((value) => value.trim());
-    const row: Record<string, string> = {};
-
-    headers.forEach((header, index) => {
-      row[header] = values[index] ?? "";
-    });
-
-    return row as Speaker;
-  });
-}
-
 export default function SpeakersPage() {
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,9 +23,13 @@ export default function SpeakersPage() {
   useEffect(() => {
     async function loadSpeakers() {
       try {
-        const response = await fetch(SHEET_URL, { cache: "no-store" });
+        const response = await fetch(SHEET_URL, {
+          cache: "no-store",
+        });
+
         const text = await response.text();
-        setSpeakers(parseCSV(text));
+
+        setSpeakers(parseCSV<Speaker>(text));
       } catch (error) {
         console.error("Could not load speakers:", error);
       } finally {
@@ -69,7 +56,9 @@ export default function SpeakersPage() {
         </p>
 
         {loading && (
-          <p className="mt-8 text-slate-600">Loading speakers...</p>
+          <p className="mt-8 text-slate-600">
+            Loading speakers...
+          </p>
         )}
 
         {!loading && speakers.length === 0 && (
@@ -112,19 +101,31 @@ export default function SpeakersPage() {
                 </div>
               </div>
 
-              <div className="border-t border-[#DDEAF2] px-6 pb-6 pt-5">
-                {speaker.SessionTitle && (
-                  <p className="text-sm font-bold text-[#FF6242]">
-                    {speaker.SessionTitle}
-                  </p>
-                )}
+              <details className="border-t border-[#DDEAF2]">
+                <summary className="cursor-pointer list-none px-6 py-4 text-sm font-bold text-[#062B70] hover:bg-[#F4F8FB]">
+                  View Speaker Details ↓
+                </summary>
 
-                {speaker.Bio && (
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                    {speaker.Bio}
-                  </p>
-                )}
-              </div>
+                <div className="px-6 pb-6">
+                  {speaker.SessionTitle && (
+                    <div className="mb-4">
+                      <p className="text-xs font-bold uppercase tracking-wide text-[#FF6242]">
+                        Presenting
+                      </p>
+
+                      <p className="mt-1 font-bold text-[#062B70]">
+                        {speaker.SessionTitle}
+                      </p>
+                    </div>
+                  )}
+
+                  {speaker.Bio && (
+                    <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">
+                      {speaker.Bio}
+                    </p>
+                  )}
+                </div>
+              </details>
             </article>
           ))}
         </div>
