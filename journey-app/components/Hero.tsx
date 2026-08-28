@@ -21,7 +21,12 @@ export default function Hero({ title, subtitle }: HeroProps) {
           strokeWidth="58"
           strokeLinecap="round"
         />
-        <path d="M415 90L530 52L507 172" fill="#12BCC4" />
+
+        <path
+          d="M415 90L530 52L507 172"
+          fill="#12BCC4"
+        />
+
         <path
           d="M130 570C275 455 400 310 520 115"
           stroke="#0A8FA8"
@@ -33,29 +38,29 @@ export default function Hero({ title, subtitle }: HeroProps) {
 
       <div className="relative mx-auto max-w-6xl">
         <div className="mb-8 flex items-center gap-5">
-  <Image
-    src="/experiencing-edtech-mark.png"
-    alt=""
-    width={150}
-    height={150}
-    priority
-    className="h-32 w-32 shrink-0 object-contain"
-  />
+          <Image
+            src="/experiencing-edtech-mark.png"
+            alt=""
+            width={150}
+            height={150}
+            priority
+            className="h-32 w-32 shrink-0 object-contain"
+          />
 
-  <div className="leading-none">
-    <p className="text-2xl font-black uppercase tracking-[0.12em] text-[#FF6242] sm:text-3xl">
-      Experiencing
-    </p>
+          <div className="leading-none">
+            <p className="text-2xl font-black uppercase tracking-[0.12em] text-[#FF6242] sm:text-3xl">
+              Experiencing
+            </p>
 
-    <p className="mt-1 text-5xl font-black tracking-tight text-white sm:text-6xl">
-      EdTech
-    </p>
+            <p className="mt-1 text-5xl font-black tracking-tight text-white sm:text-6xl">
+              EdTech
+            </p>
 
-    <p className="mt-1 text-xl font-black uppercase tracking-[0.28em] text-[#12BCC4] sm:text-2xl">
-      Conference
-    </p>
-  </div>
-</div>
+            <p className="mt-1 text-xl font-black uppercase tracking-[0.28em] text-[#12BCC4] sm:text-2xl">
+              Conference
+            </p>
+          </div>
+        </div>
 
         <p className="mb-4 text-sm font-black uppercase tracking-[0.35em] text-[#FFB13B]">
           October 6, 2026
@@ -70,11 +75,11 @@ export default function Hero({ title, subtitle }: HeroProps) {
         </p>
 
         <Link
-          href="/sessions"
-          className="mt-8 inline-flex rounded-xl bg-[#FF6242] px-7 py-4 font-bold text-white shadow-lg transition hover:bg-[#D93A9D]"
-        >
-          Begin My Journey →
-        </Link>
+  href="/journey"
+  className="mt-8 inline-flex rounded-xl bg-[#FF6242] px-7 py-4 font-bold text-white shadow-lg transition hover:bg-[#D93A9D]"
+>
+  My Favorites →
+</Link>
       </div>
     </section>
   );
