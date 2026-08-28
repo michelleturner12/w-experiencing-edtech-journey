@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import BottomNav from "../../components/BottomNav";
+import { parseCSV } from "../../lib/csv";
 
 type Partner = {
   PartnerID: string;
@@ -16,34 +17,29 @@ type Partner = {
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSmAC3kHb6-asEJxqGcQUnm723xpUiFYy7sSObHEvckb5AgSmU6sIfruCrQC7O-TqxSs8KtNa-_xgZ/pub?gid=884408230&single=true&output=csv";
 
-function parseCSV(text: string): Partner[] {
-  const rows = text.trim().split(/\r?\n/);
-  if (rows.length < 2) return [];
-
-  const headers = rows[0].split(",").map((header) => header.trim());
-
-  return rows.slice(1).map((line) => {
-    const values = line.split(",").map((value) => value.trim());
-    const row: Record<string, string> = {};
-
-    headers.forEach((header, index) => {
-      row[header] = values[index] ?? "";
-    });
-
-    return row as Partner;
-  });
-}
-
 export default function PartnersPage() {
   const [partners, setPartners] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadPartners() {
-      const response = await fetch(SHEET_URL, { cache: "no-store" });
-      const text = await response.text();
-      setPartners(parseCSV(text));
-      setLoading(false);
+      try {
+        const response = await fetch(SHEET_URL, {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Could not load partners: ${response.status}`);
+        }
+
+        const text = await response.text();
+
+        setPartners(parseCSV<Partner>(text));
+      } catch (error) {
+        console.error("Could not load partners:", error);
+      } finally {
+        setLoading(false);
+      }
     }
 
     loadPartners();
@@ -64,7 +60,11 @@ export default function PartnersPage() {
           Explore the organizations supporting this year’s conference.
         </p>
 
-        {loading && <p className="mt-8 text-slate-600">Loading partners...</p>}
+        {loading && (
+          <p className="mt-8 text-slate-600">
+            Loading partners...
+          </p>
+        )}
 
         {!loading && partners.length === 0 && (
           <div className="mt-8 rounded-2xl bg-white p-6 text-slate-600 shadow">
@@ -75,7 +75,7 @@ export default function PartnersPage() {
         <div className="mt-8 grid gap-6 sm:grid-cols-2">
           {partners.map((partner, index) => (
             <article
-              key={`${partner.Name}-${index}`}
+              key={partner.PartnerID || `${partner.Name}-${index}`}
               className="rounded-3xl border border-[#DDEAF2] bg-white p-6 shadow-lg"
             >
               {partner.Logo && (
@@ -94,14 +94,14 @@ export default function PartnersPage() {
                 {partner.Name}
               </h2>
 
-              {partner.Booth && (
+              {partner.Booth && partner.Booth !== "0" && (
                 <p className="mt-2 text-sm font-semibold text-slate-500">
                   Booth {partner.Booth}
                 </p>
               )}
 
               {partner.Description && (
-                <p className="mt-4 text-sm leading-relaxed text-slate-600">
+                <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-slate-600">
                   {partner.Description}
                 </p>
               )}
@@ -111,7 +111,7 @@ export default function PartnersPage() {
                   href={partner.Website}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-5 inline-flex rounded-xl bg-[#062B70] px-4 py-3 text-sm font-bold text-white hover:bg-[#075C9B]"
+                  className="mt-5 inline-flex rounded-xl bg-[#062B70] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#075C9B]"
                 >
                   Visit Website
                 </a>
