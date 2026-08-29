@@ -20,31 +20,50 @@ const SHEET_URL =
 
 const STORAGE_KEY = "experiencing-edtech-saved-sessions";
 
+function getSavedIds(): string[] {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function JourneyPage() {
-  const [favoriteSessions, setFavoriteSessions] = useState<Session[]>([]);
   const [allSessions, setAllSessions] = useState<Session[]>([]);
+  const [favoriteSessions, setFavoriteSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
 
+  function refreshFavorites(sessions: Session[]) {
+    const savedIds = getSavedIds();
+
+    setFavoriteSessions(
+      sessions.filter((session) =>
+        savedIds.includes(session.SessionID)
+      )
+    );
+  }
+
   useEffect(() => {
+    let loadedSessions: Session[] = [];
+
     async function loadFavorites() {
       try {
         const response = await fetch(SHEET_URL, {
           cache: "no-store",
         });
 
+        if (!response.ok) {
+          throw new Error(
+            `Could not load favorite sessions: ${response.status}`
+          );
+        }
+
         const text = await response.text();
-        const sessions = parseCSV<Session>(text);
+        loadedSessions = parseCSV<Session>(text);
 
-        setAllSessions(sessions);
-
-        const saved = localStorage.getItem(STORAGE_KEY);
-        const savedIds: string[] = saved ? JSON.parse(saved) : [];
-
-        setFavoriteSessions(
-          sessions.filter((session) =>
-            savedIds.includes(session.SessionID)
-          )
-        );
+        setAllSessions(loadedSessions);
+        refreshFavorites(loadedSessions);
       } catch (error) {
         console.error("Could not load favorite sessions:", error);
       } finally {
@@ -52,52 +71,57 @@ export default function JourneyPage() {
       }
     }
 
-    loadFavorites();
-  }, []);
-
-  useEffect(() => {
-    function refreshFavorites() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      const savedIds: string[] = saved ? JSON.parse(saved) : [];
-
-      setFavoriteSessions(
-        allSessions.filter((session) =>
-          savedIds.includes(session.SessionID)
-        )
-      );
+    function refreshFromStorage() {
+      if (loadedSessions.length > 0) {
+        refreshFavorites(loadedSessions);
+      }
     }
 
-    window.addEventListener("focus", refreshFavorites);
-    window.addEventListener("storage", refreshFavorites);
+    loadFavorites();
+
+    window.addEventListener("focus", refreshFromStorage);
+    window.addEventListener("storage", refreshFromStorage);
+    window.addEventListener("pageshow", refreshFromStorage);
 
     return () => {
-      window.removeEventListener("focus", refreshFavorites);
-      window.removeEventListener("storage", refreshFavorites);
+      window.removeEventListener("focus", refreshFromStorage);
+      window.removeEventListener("storage", refreshFromStorage);
+      window.removeEventListener("pageshow", refreshFromStorage);
     };
-  }, [allSessions]);
+  }, []);
 
   function removeFavorite(sessionId: string) {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    const savedIds: string[] = saved ? JSON.parse(saved) : [];
+    const savedIds = getSavedIds();
 
-    const updatedIds = savedIds.filter((id) => id !== sessionId);
+    const updatedIds = savedIds.filter(
+      (id) => id !== sessionId
+    );
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedIds));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(updatedIds)
+    );
 
-    setFavoriteSessions((current) =>
-      current.filter((session) => session.SessionID !== sessionId)
+    setFavoriteSessions(
+      allSessions.filter((session) =>
+        updatedIds.includes(session.SessionID)
+      )
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#F4F8FB] pb-24">
-      <div className="mx-auto max-w-5xl p-8">
-        <h1 className="mb-2 text-4xl font-black text-[#062B70]">
+    <main className="min-h-screen bg-[#F4F8FB] pb-28">
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#12BCC4]">
+          Experiencing EdTech 2026
+        </p>
+
+        <h1 className="mt-2 text-4xl font-black text-[#062B70]">
           My Favorite Sessions
         </h1>
 
-        <p className="mb-6 text-slate-600">
-          Your saved sessions will appear here.
+        <p className="mt-3 mb-8 text-slate-600">
+          Keep track of the sessions you don't want to miss.
         </p>
 
         {loading && (
@@ -107,9 +131,15 @@ export default function JourneyPage() {
         )}
 
         {!loading && favoriteSessions.length === 0 && (
-          <div className="rounded-2xl bg-white p-6 text-slate-600 shadow">
-            You have not saved any sessions yet. Visit Sessions and tap the
-            heart to add favorites.
+          <div className="rounded-2xl border border-[#DDEAF2] bg-white p-6 shadow">
+            <h2 className="font-bold text-[#062B70]">
+              No favorites yet
+            </h2>
+
+            <p className="mt-2 text-slate-600">
+              Visit Sessions and select the heart next to any session you want
+              to save.
+            </p>
           </div>
         )}
 
@@ -132,7 +162,7 @@ export default function JourneyPage() {
                   </h2>
 
                   {session.Speaker && (
-                    <p className="mt-1 text-slate-600">
+                    <p className="mt-1 font-medium text-slate-600">
                       {session.Speaker}
                     </p>
                   )}
@@ -144,7 +174,7 @@ export default function JourneyPage() {
                   </p>
 
                   {session.Description && (
-                    <p className="mt-4 whitespace-pre-line text-slate-600">
+                    <p className="mt-4 whitespace-pre-line leading-relaxed text-slate-600">
                       {session.Description}
                     </p>
                   )}
@@ -153,11 +183,24 @@ export default function JourneyPage() {
                 <button
                   type="button"
                   onClick={() => removeFavorite(session.SessionID)}
-                  className="h-fit shrink-0 text-3xl"
-                  aria-label="Remove from My Favorite Sessions"
-                  title="Remove from My Favorite Sessions"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#FF6242] bg-[#FFF2EF] text-[#FF6242] transition hover:bg-[#FFE3DC]"
+                  aria-label="Remove from My Favorites"
+                  title="Remove from My Favorites"
                 >
-                  ❤️
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-6 w-6"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                    />
+                  </svg>
                 </button>
               </div>
             </article>

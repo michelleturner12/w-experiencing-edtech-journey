@@ -20,21 +20,26 @@ const SHEET_URL =
 
 const STORAGE_KEY = "experiencing-edtech-saved-sessions";
 
+function getSavedIds(): string[] {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function SessionsPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (saved) {
-      try {
-        setSavedIds(JSON.parse(saved));
-      } catch {
-        console.warn("Could not read saved sessions.");
-      }
+    function refreshSavedIds() {
+      setSavedIds(getSavedIds());
     }
+
+    refreshSavedIds();
 
     async function loadSessions() {
       try {
@@ -47,7 +52,6 @@ export default function SessionsPage() {
         }
 
         const text = await response.text();
-
         setSessions(parseCSV<Session>(text));
       } catch (error) {
         console.error("Could not load sessions:", error);
@@ -57,26 +61,42 @@ export default function SessionsPage() {
     }
 
     loadSessions();
+
+    window.addEventListener("focus", refreshSavedIds);
+    window.addEventListener("storage", refreshSavedIds);
+    window.addEventListener("pageshow", refreshSavedIds);
+
+    return () => {
+      window.removeEventListener("focus", refreshSavedIds);
+      window.removeEventListener("storage", refreshSavedIds);
+      window.removeEventListener("pageshow", refreshSavedIds);
+    };
   }, []);
 
-  function toggleSaved(sessionId: string) {
-    const updated = savedIds.includes(sessionId)
-      ? savedIds.filter((id) => id !== sessionId)
-      : [...savedIds, sessionId];
+  function toggleFavorite(sessionId: string) {
+    const currentIds = getSavedIds();
 
-    setSavedIds(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    const updatedIds = currentIds.includes(sessionId)
+      ? currentIds.filter((id) => id !== sessionId)
+      : [...currentIds, sessionId];
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedIds));
+    setSavedIds(updatedIds);
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 pb-24">
-      <div className="mx-auto max-w-5xl p-8">
-        <h1 className="mb-2 text-4xl font-bold text-[#062B70]">
+    <main className="min-h-screen bg-[#F4F8FB] pb-28">
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#12BCC4]">
+          Experiencing EdTech 2026
+        </p>
+
+        <h1 className="mt-2 text-4xl font-black text-[#062B70]">
           Sessions
         </h1>
 
-        <p className="mb-6 text-slate-600">
-          Explore sessions and save the ones you want in My Schedule.
+        <p className="mt-3 mb-8 text-slate-600">
+          Explore the conference sessions and save your favorites.
         </p>
 
         {loading && (
@@ -93,7 +113,7 @@ export default function SessionsPage() {
 
         <div className="space-y-4">
           {sessions.map((session) => {
-            const isSaved = savedIds.includes(session.SessionID);
+            const isFavorite = savedIds.includes(session.SessionID);
 
             return (
               <article
@@ -133,20 +153,37 @@ export default function SessionsPage() {
 
                   <button
                     type="button"
-                    onClick={() => toggleSaved(session.SessionID)}
-                    className="h-fit shrink-0 text-3xl"
+                    onClick={() => toggleFavorite(session.SessionID)}
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition ${
+                      isFavorite
+                        ? "border-[#FF6242] bg-[#FFF2EF] text-[#FF6242]"
+                        : "border-[#DDEAF2] bg-white text-slate-400 hover:border-[#FF6242] hover:text-[#FF6242]"
+                    }`}
                     aria-label={
-                      isSaved
-                        ? "Remove from My Schedule"
-                        : "Add to My Schedule"
+                      isFavorite
+                        ? "Remove from My Favorites"
+                        : "Add to My Favorites"
                     }
                     title={
-                      isSaved
-                        ? "Remove from My Schedule"
-                        : "Add to My Schedule"
+                      isFavorite
+                        ? "Remove from My Favorites"
+                        : "Add to My Favorites"
                     }
                   >
-                    {isSaved ? "❤️" : "🤍"}
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-6 w-6"
+                      fill={isFavorite ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                      />
+                    </svg>
                   </button>
                 </div>
               </article>
