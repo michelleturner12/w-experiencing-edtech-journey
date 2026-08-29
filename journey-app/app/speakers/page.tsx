@@ -177,8 +177,20 @@ export default function SpeakersPage() {
                 </summary>
 
                 <div className="px-6 pb-6">
+                  {speaker.Bio && (
+                    <div>
+                      <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#12BCC4]">
+                        About
+                      </p>
+
+                      <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">
+                        {speaker.Bio}
+                      </p>
+                    </div>
+                  )}
+
                   {speaker.Sessions.length > 0 && (
-                    <div className="mb-5">
+                    <div className={speaker.Bio ? "mt-7" : ""}>
                       <p className="text-xs font-bold uppercase tracking-wide text-[#FF6242]">
                         Presenting
                       </p>
@@ -212,20 +224,6 @@ export default function SpeakersPage() {
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
-
-                  {speaker.Bio && (
-                    <div>
-                      {speaker.Sessions.length > 0 && (
-                        <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#12BCC4]">
-                          About
-                        </p>
-                      )}
-
-                      <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">
-                        {speaker.Bio}
-                      </p>
                     </div>
                   )}
                 </div>
