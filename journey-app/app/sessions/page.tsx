@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import BottomNav from "../../components/BottomNav";
 import { parseCSV } from "../../lib/csv";
@@ -20,10 +21,37 @@ type Session = {
   "Reflection Prompt"?: string;
 };
 
-const SHEET_URL =
+type Speaker = {
+  Name: string;
+  Title: string;
+  Organization: string;
+  Bio: string;
+  Photo: string;
+};
+
+const SESSIONS_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSmAC3kHb6-asEJxqGcQUnm723xpUiFYy7sSObHEvckb5AgSmU6sIfruCrQC7O-TqxSs8KtNa-_xgZ/pub?gid=0&single=true&output=csv";
 
+const SPEAKERS_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRSmAC3kHb6-asEJxqGcQUnm723xpUiFYy7sSObHEvckb5AgSmU6sIfruCrQC7O-TqxSs8KtNa-_xgZ/pub?gid=1680982673&single=true&output=csv";
+
 const STORAGE_KEY = "experiencing-edtech-saved-sessions";
+
+function cleanName(value: string) {
+  return String(value ?? "")
+    .normalize("NFKD")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .toLowerCase();
+}
+
+function slugify(value: string) {
+  return String(value ?? "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 function getSavedIds() {
   if (typeof window === "undefined") return [];
@@ -57,28 +85,39 @@ function HeartIcon({ filled }: { filled: boolean }) {
 
 export default function SessionsPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadSessions() {
+    async function loadData() {
       try {
-        const response = await fetch(SHEET_URL, {
-          cache: "no-store",
-        });
+        const [sessionResponse, speakerResponse] = await Promise.all([
+          fetch(SESSIONS_URL, { cache: "no-store" }),
+          fetch(SPEAKERS_URL, { cache: "no-store" }),
+        ]);
 
-        if (!response.ok) {
+        if (!sessionResponse.ok) {
           throw new Error(
-            `Could not load sessions: ${response.status}`
+            `Could not load sessions: ${sessionResponse.status}`
           );
         }
 
-        const text = await response.text();
-        const data = parseCSV<Session>(text);
+        if (!speakerResponse.ok) {
+          throw new Error(
+            `Could not load speakers: ${speakerResponse.status}`
+          );
+        }
 
-        setSessions(data);
+        const [sessionText, speakerText] = await Promise.all([
+          sessionResponse.text(),
+          speakerResponse.text(),
+        ]);
+
+        setSessions(parseCSV<Session>(sessionText));
+        setSpeakers(parseCSV<Speaker>(speakerText));
       } catch (error) {
-        console.error("Could not load sessions:", error);
+        console.error("Could not load conference data:", error);
       } finally {
         setLoading(false);
       }
@@ -88,7 +127,7 @@ export default function SessionsPage() {
       setSavedIds(getSavedIds());
     }
 
-    loadSessions();
+    loadData();
     refreshFavorites();
 
     window.addEventListener("focus", refreshFavorites);
@@ -102,6 +141,34 @@ export default function SessionsPage() {
     };
   }, []);
 
+  /*
+    IMPORTANT:
+    Wait until session data is actually on the page before
+    scrolling to the linked session.
+  */
+  useEffect(() => {
+    if (loading || sessions.length === 0) return;
+
+    const hash = window.location.hash;
+
+    if (!hash) return;
+
+    const targetId = decodeURIComponent(hash.substring(1));
+
+    const timer = window.setTimeout(() => {
+      const target = document.getElementById(targetId);
+
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 150);
+
+    return () => window.clearTimeout(timer);
+  }, [loading, sessions]);
+
   function toggleFavorite(sessionId: string) {
     const id = String(sessionId);
 
@@ -110,10 +177,24 @@ export default function SessionsPage() {
       : [...savedIds, id];
 
     setSavedIds(nextSavedIds);
+
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(nextSavedIds)
     );
+  }
+
+  function getMatchingSpeakers(sessionSpeaker: string) {
+    const sessionName = cleanName(sessionSpeaker);
+
+    return speakers.filter((speaker) => {
+      const speakerName = cleanName(speaker.Name);
+
+      return (
+        speakerName.length > 0 &&
+        sessionName.includes(speakerName)
+      );
+    });
   }
 
   return (
@@ -148,17 +229,25 @@ export default function SessionsPage() {
             const sessionId =
               String(session.SessionID || "").trim();
 
+            const anchorId = sessionId
+              ? `session-${sessionId}`
+              : `session-${slugify(session.Title)}`;
+
             const isSaved =
               sessionId.length > 0 &&
               savedIds.includes(sessionId);
 
+            const matchingSpeakers =
+              getMatchingSpeakers(session.Speaker);
+
             return (
               <article
+                id={anchorId}
                 key={
                   sessionId ||
                   `${session.Title}-${session.Time}-${index}`
                 }
-                className="overflow-hidden rounded-3xl border border-[#DDEAF2] bg-white shadow-md"
+                className="scroll-mt-24 overflow-hidden rounded-3xl border border-[#DDEAF2] bg-white shadow-md"
               >
                 <div className="p-6">
                   <div className="flex items-start justify-between gap-5">
@@ -174,9 +263,25 @@ export default function SessionsPage() {
                       </h2>
 
                       {session.Speaker && (
-                        <p className="mt-2 text-base text-slate-600">
-                          {session.Speaker}
-                        </p>
+                        <div className="mt-2 text-base text-slate-600">
+                          {matchingSpeakers.length > 0 ? (
+                            <div className="flex flex-wrap gap-x-3 gap-y-1">
+                              {matchingSpeakers.map((speaker) => (
+                                <Link
+                                  key={speaker.Name}
+                                  href={`/speakers#speaker-${slugify(
+                                    speaker.Name
+                                  )}`}
+                                  className="font-semibold text-[#075C9B] underline decoration-[#12BCC4] decoration-2 underline-offset-4 transition hover:text-[#12BCC4]"
+                                >
+                                  {speaker.Name}
+                                </Link>
+                              ))}
+                            </div>
+                          ) : (
+                            <span>{session.Speaker}</span>
+                          )}
+                        </div>
                       )}
 
                       {(session.Time ||
